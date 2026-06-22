@@ -1,0 +1,4 @@
+anthropic
+pypdf2
+python-docx
+rich
