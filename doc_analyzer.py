@@ -8,6 +8,7 @@ import sys
 from pathlib import Path
 
 from google import genai
+from google.genai import errors as genai_errors
 from dotenv import load_dotenv
 from reportlab.lib.colors import HexColor, black, white
 from reportlab.lib.pagesizes import LETTER
@@ -90,11 +91,22 @@ def analyze(file_path: Path) -> dict:
         f"Content:\n{text}"
     )
 
-    with console.status("Analyzing...", spinner="dots"):
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=full_prompt,
-        )
+    models = ["gemini-2.5-flash", "gemini-2.5-flash-lite"]
+    response = None
+    for model in models:
+        try:
+            with console.status(f"Analyzing with {model}...", spinner="dots"):
+                response = client.models.generate_content(
+                    model=model,
+                    contents=full_prompt,
+                )
+            break
+        except genai_errors.ServerError as e:
+            if "503" in str(e) and model != models[-1]:
+                console.print(f"[yellow]{model} unavailable, retrying with {models[models.index(model) + 1]}...[/yellow]")
+            else:
+                console.print(f"[red]API error: {e}[/red]")
+                sys.exit(1)
 
     raw = response.text.strip()
     if raw.startswith("```"):
