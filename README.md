@@ -34,9 +34,14 @@ cp .env.example .env
 ```bash
 python doc_analyzer.py path/to/file.txt
 python doc_analyzer.py path/to/document.pdf
+python doc_analyzer.py path/to/notes.md
 ```
 
-Supports `.txt`, `.pdf`, and `.md` files.
+Supports `.txt`, `.pdf`, and `.md` files. PDF text is extracted using PyMuPDF (fitz).
+
+## Model
+
+Uses `gemini-2.5-flash` via the [Google GenAI Python SDK](https://github.com/google-gemini/generative-ai-python).
 
 ## Example
 
