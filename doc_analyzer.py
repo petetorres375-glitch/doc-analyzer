@@ -37,17 +37,13 @@ def read_file(path: Path) -> str:
 
 def read_pdf(path: Path) -> str:
     try:
-        import PyPDF2
+        import fitz
     except ImportError:
-        console.print("[red]PyPDF2 not installed. Run: pip install pypdf2[/red]")
+        console.print("[red]PyMuPDF not installed. Run: pip install pymupdf[/red]")
         sys.exit(1)
 
-    text_parts = []
-    with open(path, "rb") as f:
-        reader = PyPDF2.PdfReader(f)
-        for page in reader.pages:
-            text_parts.append(page.extract_text() or "")
-    return "\n".join(text_parts)
+    doc = fitz.open(str(path))
+    return "\n".join(page.get_text() for page in doc)
 
 
 def analyze(file_path: Path) -> dict:
@@ -71,7 +67,7 @@ def analyze(file_path: Path) -> dict:
 
     with console.status("Analyzing...", spinner="dots"):
         response = client.models.generate_content(
-            model="gemini-2.5-flash-lite",
+            model="gemini-2.5-flash",
             contents=full_prompt,
         )
 

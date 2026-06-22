@@ -1,5 +1,5 @@
 google-genai
-pypdf2
+pymupdf
 python-docx
 python-dotenv
 rich
