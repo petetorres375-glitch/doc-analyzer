@@ -41,7 +41,7 @@ Supports `.txt`, `.pdf`, and `.md` files. PDF text is extracted using PyMuPDF (f
 
 ## Model
 
-Uses `gemini-2.5-flash` via the [Google GenAI Python SDK](https://github.com/google-gemini/generative-ai-python).
+Uses `gemini-2.5-flash` as the primary model via the [Google GenAI Python SDK](https://github.com/google-gemini/generative-ai-python). Automatically falls back to `gemini-2.5-flash-lite` on a 503 (model overload) before giving up.
 
 ## Example
 
