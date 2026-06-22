@@ -1,4 +1,5 @@
-anthropic
+google-genai
 pypdf2
 python-docx
+python-dotenv
 rich

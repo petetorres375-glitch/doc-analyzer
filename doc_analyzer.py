@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
-"""doc_analyzer — Analyze PDF and text files using the Anthropic API."""
+"""doc_analyzer — Analyze PDF and text files using the Gemini API."""
 
 import argparse
+import os
 import sys
 from pathlib import Path
 
-import anthropic
+from google import genai
+from dotenv import load_dotenv
 from rich.console import Console
 from rich.panel import Panel
+
+load_dotenv()
 
 console = Console()
 
@@ -40,44 +44,40 @@ def analyze(file_path: Path, prompt: str) -> str:
     if not text.strip():
         return "Could not extract any text from the file."
 
-    client = anthropic.Anthropic()
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        console.print("[red]GEMINI_API_KEY not set in .env[/red]")
+        sys.exit(1)
+
+    client = genai.Client(api_key=api_key)
+
+    full_prompt = (
+        f"You are a helpful document analyst. "
+        f"Read the provided document content and answer the user's question clearly and concisely.\n\n"
+        f"Document: {file_path.name}\n\n"
+        f"Content:\n{text}\n\n"
+        f"Task: {prompt}"
+    )
 
     with console.status("Analyzing...", spinner="dots"):
-        response = client.messages.create(
-            model="claude-sonnet-4-6",
-            max_tokens=4096,
-            system=(
-                "You are a helpful document analyst. "
-                "Read the provided document content and answer the user's question clearly and concisely."
-            ),
-            messages=[
-                {
-                    "role": "user",
-                    "content": (
-                        f"Document: {file_path.name}\n\n"
-                        f"Content:\n{text}\n\n"
-                        f"Task: {prompt}"
-                    ),
-                }
-            ],
+        response = client.models.generate_content(
+            model="gemini-2.5-flash-lite",
+            contents=full_prompt,
         )
 
-    for block in response.content:
-        if block.type == "text":
-            return block.text
-    return ""
+    return response.text
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Analyze PDF and text files using the Anthropic API."
+        description="Analyze PDF and text files using the Gemini API."
     )
     parser.add_argument("file", help="Path to a PDF or text file")
     parser.add_argument(
         "prompt",
         nargs="?",
         default="Summarize this document in a few sentences.",
-        help='What to do with the file (default: summarize)',
+        help="What to do with the file (default: summarize)",
     )
     args = parser.parse_args()
 
