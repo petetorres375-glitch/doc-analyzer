@@ -127,7 +127,7 @@ def build_section(title: str, content) -> list:
 
     if isinstance(content, list):
         for item in content:
-            elements.append(Paragraph(f"• {item}", body_style))
+            elements.append(Paragraph(f"• {item.lstrip('- ').strip()}", body_style))
     else:
         elements.append(Paragraph(content, body_style))
 
