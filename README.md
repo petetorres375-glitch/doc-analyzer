@@ -1,6 +1,6 @@
 # doc_analyzer
 
-A Python CLI tool that analyzes PDF and text files using the Gemini API. Returns a structured breakdown with four labeled sections displayed as color-coded panels in the terminal.
+A document analysis tool powered by the Gemini API. Upload a PDF, TXT, or MD file and get a structured breakdown across four sections. Available as both a web app and a CLI.
 
 ## Output
 
@@ -9,27 +9,46 @@ A Python CLI tool that analyzes PDF and text files using the Gemini API. Returns
 - **Action Items** — tasks, deadlines, and next steps
 - **Red Flags** — concerns, risks, or missing information
 
-## Requirements
+Results are displayed in the browser (web) or as color-coded terminal panels (CLI). Both modes generate a downloadable PDF report.
 
-- Python 3.12+
-- A free Gemini API key from [aistudio.google.com](https://aistudio.google.com)
+---
 
-## Setup
+## Web App
+
+### Deploy to Railway
+
+1. Fork or clone this repo and push to GitHub
+2. Go to [railway.app](https://railway.app) → **New Project → Deploy from GitHub repo**
+3. Select this repository
+4. Under **Variables**, add:
+   - `GEMINI_API_KEY` — your key from [aistudio.google.com](https://aistudio.google.com)
+   - `SECRET_KEY` — any random string (e.g. `python -c "import secrets; print(secrets.token_hex(32))"`)
+5. Railway auto-detects the `Procfile` and deploys
+
+### Run locally
 
 ```bash
-# Clone the repo
-git clone https://github.com/petetorres375-glitch/doc-analyzer.git
-cd doc-analyzer
-
-# Install dependencies
 pip install -r requirements.txt
-
-# Add your Gemini API key
 cp .env.example .env
-# Edit .env and paste your key
+# Edit .env and add your GEMINI_API_KEY
+python app.py
 ```
 
-## Usage
+Open `http://localhost:5000` in your browser.
+
+---
+
+## CLI
+
+### Setup
+
+```bash
+pip install -r requirements.txt
+cp .env.example .env
+# Edit .env and add your GEMINI_API_KEY
+```
+
+### Usage
 
 ```bash
 python doc_analyzer.py path/to/file.txt
@@ -37,13 +56,9 @@ python doc_analyzer.py path/to/document.pdf
 python doc_analyzer.py path/to/notes.md
 ```
 
-Supports `.txt`, `.pdf`, and `.md` files. PDF text is extracted using PyMuPDF (fitz).
+Supports `.txt`, `.pdf`, and `.md` files. PDF text is extracted using PyMuPDF.
 
-## Model
-
-Uses `gemini-2.5-flash` as the primary model via the [Google GenAI Python SDK](https://github.com/google-gemini/generative-ai-python). Automatically falls back to `gemini-2.5-flash-lite` on a 503 (model overload) before giving up.
-
-## Example
+### Example output
 
 ```
 python doc_analyzer.py sample_docs/sample_invoice.txt
@@ -65,3 +80,14 @@ python doc_analyzer.py sample_docs/sample_invoice.txt
 │ • No explicit tax rate mentioned.             │
 ╰───────────────────────────────────────────────╯
 ```
+
+---
+
+## Requirements
+
+- Python 3.12+
+- A free Gemini API key from [aistudio.google.com](https://aistudio.google.com)
+
+## Model
+
+Uses `gemini-2.5-flash` via the [Google GenAI Python SDK](https://github.com/google-gemini/generative-ai-python). Automatically falls back to `gemini-2.5-flash-lite` on a 503 before giving up.
