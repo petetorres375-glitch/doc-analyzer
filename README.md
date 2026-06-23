@@ -73,6 +73,10 @@ python doc_analyzer.py sample_docs/sample_invoice.txt
 
 Uses `gemini-2.5-flash` as the primary model. Automatically falls back to `gemini-2.5-flash-lite` on a 503 (model overload) before giving up.
 
+## Live Demo
+
+[https://web-production-b4dc1.up.railway.app/](https://web-production-b4dc1.up.railway.app/)
+
 ## Deploy to Railway
 
 1. Go to [railway.app](https://railway.app) → **New Project → Deploy from GitHub repo**
