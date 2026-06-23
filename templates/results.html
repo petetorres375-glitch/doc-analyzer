@@ -128,6 +128,42 @@
 
     .btn-secondary:hover { border-color: #aaaaaa; }
 
+    /* ── Email row ── */
+    .email-row {
+      display: flex;
+      gap: 0.6rem;
+      margin-bottom: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .email-input {
+      flex: 1;
+      min-width: 200px;
+      padding: 0.7rem 1rem;
+      border: 1.5px solid #dddddd;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: #111111;
+      background: #ffffff;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .email-input:focus {
+      outline: none;
+      border-color: #FF6B00;
+      box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.12);
+    }
+
+    .email-status {
+      font-size: 0.85rem;
+      min-height: 1.2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .email-status.success { color: #2e7d32; }
+    .email-status.error   { color: #c53030; }
+
     /* ── Result panels ── */
     .results {
       display: flex;
@@ -219,6 +255,7 @@
       .page-title { font-size: 1.5rem; }
       .actions { flex-direction: column; }
       .btn-primary, .btn-secondary { text-align: center; }
+      .email-row { flex-direction: column; }
     }
   </style>
 </head>
@@ -245,6 +282,15 @@
          class="btn-secondary">Download TXT Report</a>
       <a href="/" class="btn-secondary">Analyze Another</a>
     </div>
+
+    <input type="hidden" id="result-b64" value="{{ result_b64 }}">
+    <input type="hidden" id="email-filename" value="{{ filename }}">
+
+    <div class="email-row">
+      <input type="email" id="email-input" class="email-input" placeholder="Send report to your email...">
+      <button type="button" class="btn-secondary" id="email-btn">Email Report</button>
+    </div>
+    <p id="email-status" class="email-status"></p>
 
     <div class="results">
 
@@ -292,6 +338,50 @@
   <footer>
     &copy; 2026 <span>Torres Tech Remote</span> — All rights reserved.
   </footer>
+
+  <script>
+    const emailBtn    = document.getElementById('email-btn');
+    const emailInput  = document.getElementById('email-input');
+    const emailStatus = document.getElementById('email-status');
+
+    emailBtn.addEventListener('click', async () => {
+      const email = emailInput.value.trim();
+      if (!email) {
+        emailStatus.textContent = 'Please enter an email address.';
+        emailStatus.className = 'email-status error';
+        return;
+      }
+
+      const fd = new FormData();
+      fd.append('email', email);
+      fd.append('filename', document.getElementById('email-filename').value);
+      fd.append('result_b64', document.getElementById('result-b64').value);
+
+      emailBtn.disabled = true;
+      emailBtn.textContent = 'Sending...';
+      emailStatus.textContent = '';
+      emailStatus.className = 'email-status';
+
+      try {
+        const res  = await fetch('/send-email', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (data.ok) {
+          emailStatus.textContent = `Report sent to ${email}!`;
+          emailStatus.className = 'email-status success';
+          emailInput.value = '';
+        } else {
+          emailStatus.textContent = data.error || 'Failed to send.';
+          emailStatus.className = 'email-status error';
+        }
+      } catch {
+        emailStatus.textContent = 'Network error. Please try again.';
+        emailStatus.className = 'email-status error';
+      } finally {
+        emailBtn.disabled = false;
+        emailBtn.textContent = 'Email Report';
+      }
+    });
+  </script>
 
 </body>
 </html>
