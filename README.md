@@ -1,6 +1,6 @@
 # doc_analyzer
 
-A document analysis tool powered by the Gemini API. Upload a PDF, TXT, or MD file and get a structured breakdown across four sections. Available as both a web app and a CLI.
+A Python tool that analyzes PDF and text files using the Gemini API. Returns a structured breakdown with four labeled sections. Runs as a web app or from the command line — both modes generate a downloadable PDF report.
 
 ## Output
 
@@ -9,56 +9,44 @@ A document analysis tool powered by the Gemini API. Upload a PDF, TXT, or MD fil
 - **Action Items** — tasks, deadlines, and next steps
 - **Red Flags** — concerns, risks, or missing information
 
-Results are displayed in the browser (web) or as color-coded terminal panels (CLI). Both modes generate a downloadable PDF report.
+## Requirements
 
----
+- Python 3.12+
+- A free Gemini API key from [aistudio.google.com](https://aistudio.google.com)
 
-## Web App
-
-### Deploy to Railway
-
-1. Fork or clone this repo and push to GitHub
-2. Go to [railway.app](https://railway.app) → **New Project → Deploy from GitHub repo**
-3. Select this repository
-4. Under **Variables**, add:
-   - `GEMINI_API_KEY` — your key from [aistudio.google.com](https://aistudio.google.com)
-   - `SECRET_KEY` — any random string (e.g. `python -c "import secrets; print(secrets.token_hex(32))"`)
-5. Railway auto-detects the `Procfile` and deploys
-
-### Run locally
+## Setup
 
 ```bash
+git clone https://github.com/petetorres375-glitch/doc-analyzer.git
+cd doc-analyzer
+
 pip install -r requirements.txt
+
 cp .env.example .env
-# Edit .env and add your GEMINI_API_KEY
+# Edit .env and add your Gemini API key
+```
+
+## Usage
+
+**Web app:**
+
+```bash
 python app.py
 ```
 
-Open `http://localhost:5000` in your browser.
+Open `http://localhost:5000`, upload a file, and view results in the browser. A PDF report is available to download from the results page.
 
----
-
-## CLI
-
-### Setup
+**CLI:**
 
 ```bash
-pip install -r requirements.txt
-cp .env.example .env
-# Edit .env and add your GEMINI_API_KEY
-```
-
-### Usage
-
-```bash
+python doc_analyzer.py path/to/file.pdf
 python doc_analyzer.py path/to/file.txt
-python doc_analyzer.py path/to/document.pdf
 python doc_analyzer.py path/to/notes.md
 ```
 
-Supports `.txt`, `.pdf`, and `.md` files. PDF text is extracted using PyMuPDF.
+Supports `.pdf`, `.txt`, and `.md` files. PDF text is extracted using PyMuPDF.
 
-### Example output
+## Example
 
 ```
 python doc_analyzer.py sample_docs/sample_invoice.txt
@@ -81,13 +69,13 @@ python doc_analyzer.py sample_docs/sample_invoice.txt
 ╰───────────────────────────────────────────────╯
 ```
 
----
-
-## Requirements
-
-- Python 3.12+
-- A free Gemini API key from [aistudio.google.com](https://aistudio.google.com)
-
 ## Model
 
-Uses `gemini-2.5-flash` via the [Google GenAI Python SDK](https://github.com/google-gemini/generative-ai-python). Automatically falls back to `gemini-2.5-flash-lite` on a 503 before giving up.
+Uses `gemini-2.5-flash` as the primary model. Automatically falls back to `gemini-2.5-flash-lite` on a 503 (model overload) before giving up.
+
+## Deploy to Railway
+
+1. Go to [railway.app](https://railway.app) → **New Project → Deploy from GitHub repo**
+2. Select this repository
+3. Add environment variables: `GEMINI_API_KEY` and `SECRET_KEY`
+4. Railway detects the `Procfile` and deploys automatically
