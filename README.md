@@ -2,7 +2,7 @@
 
 A Python tool that analyzes PDF and text files using the Gemini API. Returns a structured breakdown with four labeled sections. Runs as a web app or from the command line — both modes generate a downloadable report.
 
-**No data retention** — uploaded files are deleted from the server immediately after analysis. Nothing is stored between requests.
+**No data retention** — uploaded files are deleted from the server immediately after analysis. Nothing is stored between requests. Emailed reports are built in memory and sent directly — never written to disk.
 
 ## Output
 
@@ -36,7 +36,7 @@ cp .env.example .env
 python app.py
 ```
 
-Open `http://localhost:5000`, upload a file, and view results in the browser. Download the report as a PDF or TXT file directly from the results page. The uploaded file is deleted from the server as soon as the analysis completes.
+Open `http://localhost:5000`, upload a file, and view results in the browser. Download the report as a PDF or TXT file, or enter an email address to receive the TXT report as an attachment. The uploaded file is deleted from the server as soon as the analysis completes.
 
 **CLI:**
 
@@ -84,4 +84,5 @@ Uses `gemini-2.5-flash` as the primary model. Automatically falls back to `gemin
 1. Go to [railway.app](https://railway.app) → **New Project → Deploy from GitHub repo**
 2. Select this repository
 3. Add environment variables: `GEMINI_API_KEY` and `SECRET_KEY`
+4. To enable the Email Report button, also add `SMTP_USER` (your Gmail address) and `SMTP_PASS` (a Gmail App Password)
 4. Railway detects the `Procfile` and deploys automatically
