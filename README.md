@@ -1,6 +1,8 @@
 # doc_analyzer
 
-A Python tool that analyzes PDF and text files using the Gemini API. Returns a structured breakdown with four labeled sections. Runs as a web app or from the command line — both modes generate a downloadable PDF report.
+A Python tool that analyzes PDF and text files using the Gemini API. Returns a structured breakdown with four labeled sections. Runs as a web app or from the command line — both modes generate a downloadable report.
+
+**No data retention** — uploaded files are deleted from the server immediately after analysis. Nothing is stored between requests.
 
 ## Output
 
@@ -34,7 +36,7 @@ cp .env.example .env
 python app.py
 ```
 
-Open `http://localhost:5000`, upload a file, and view results in the browser. A PDF report is available to download from the results page.
+Open `http://localhost:5000`, upload a file, and view results in the browser. Download the report as a PDF or TXT file directly from the results page. The uploaded file is deleted from the server as soon as the analysis completes.
 
 **CLI:**
 
