@@ -237,7 +237,12 @@
     <p class="query-label">Results for: <span>{{ filename }}</span></p>
 
     <div class="actions">
-      <a href="/download/{{ report_id }}" class="btn-primary">Download PDF Report</a>
+      <a href="data:application/pdf;base64,{{ pdf_b64 }}"
+         download="{{ stem }}_report.pdf"
+         class="btn-primary">Download PDF Report</a>
+      <a href="data:text/plain;base64,{{ txt_b64 }}"
+         download="{{ stem }}_report.txt"
+         class="btn-secondary">Download TXT Report</a>
       <a href="/" class="btn-secondary">Analyze Another</a>
     </div>
 
