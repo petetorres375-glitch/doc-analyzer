@@ -4,7 +4,7 @@ import uuid
 from io import BytesIO
 from pathlib import Path
 
-from flask import Flask, flash, redirect, render_template, request, send_file, url_for
+from flask import Flask, render_template, request, send_file
 from werkzeug.utils import secure_filename
 
 from doc_analyzer import analyze, save_report
@@ -23,19 +23,20 @@ def allowed_ext(filename: str) -> bool:
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("index.html", error=None)
 
 
 @app.route("/analyze", methods=["POST"])
 def analyze_file():
+    def err(msg):
+        return render_template("index.html", error=msg)
+
     f = request.files.get("file")
     if not f or f.filename == "":
-        flash("Please select a file.")
-        return redirect(url_for("index"))
+        return err("Please select a file.")
 
     if not allowed_ext(f.filename):
-        flash("Unsupported file type. Upload a PDF, TXT, or MD file.")
-        return redirect(url_for("index"))
+        return err("Unsupported file type. Upload a PDF, TXT, or MD file.")
 
     filename = secure_filename(f.filename)
 
@@ -47,11 +48,9 @@ def analyze_file():
             report_path = save_report(input_path, result)
             pdf_bytes = report_path.read_bytes()
     except SystemExit:
-        flash("Analysis failed. Check that your file contains readable text and your API key is valid.")
-        return redirect(url_for("index"))
+        return err("Analysis failed. Check that your file contains readable text and your API key is valid.")
     except Exception as e:
-        flash(f"Unexpected error: {e}")
-        return redirect(url_for("index"))
+        return err(f"Unexpected error: {e}")
 
     report_id = str(uuid.uuid4())
     _report_store[report_id] = {

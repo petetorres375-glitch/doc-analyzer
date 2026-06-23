@@ -3,85 +3,259 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>doc_analyzer</title>
+  <title>Doc Analyzer — Torres Tech Remote</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f4f5f7; color: #333; min-height: 100vh; }
-    header { background: #1e1e2e; color: white; padding: 1.5rem 2rem; }
-    header h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: 0.03em; }
-    header p { font-size: 0.875rem; color: #999; margin-top: 0.3rem; }
-    main { max-width: 580px; margin: 3rem auto; padding: 0 1rem; }
-    .flash { background: #fff0f0; border: 1px solid #f5c6c6; border-radius: 6px; padding: 0.75rem 1rem; margin-bottom: 1.25rem; color: #c0392b; font-size: 0.9rem; }
-    .card { background: white; border-radius: 8px; padding: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.07); }
-    .card h2 { font-size: 1.05rem; margin-bottom: 0.5rem; color: #1e1e2e; }
-    .supported { font-size: 0.85rem; color: #888; margin-bottom: 1.75rem; }
-    .drop-zone { border: 2px dashed #ccc; border-radius: 6px; padding: 2.5rem 1.5rem; text-align: center; transition: border-color 0.2s, background 0.2s; }
-    .drop-zone.over { border-color: #4a90d9; background: #f0f7ff; }
-    .drop-zone input[type="file"] { display: none; }
-    .drop-zone label { cursor: pointer; color: #4a90d9; font-weight: 600; }
-    .drop-zone span { color: #666; }
-    .file-chosen { margin-top: 0.75rem; font-size: 0.875rem; color: #444; min-height: 1.2em; }
-    .btn { display: block; width: 100%; padding: 0.7rem; background: #1e1e2e; color: white; border: none; border-radius: 6px; font-size: 1rem; cursor: pointer; margin-top: 1.5rem; transition: background 0.2s; }
-    .btn:hover:not(:disabled) { background: #2d2d4e; }
-    .btn:disabled { background: #aaa; cursor: not-allowed; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #f5f5f5;
+      color: #111111;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: #111111;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: baseline;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+    }
+
+    .brand-name {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-accent { color: #FF6B00; }
+
+    .brand-divider {
+      width: 1px;
+      height: 1.1rem;
+      background: #333333;
+      flex-shrink: 0;
+    }
+
+    .tool-name {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #888888;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── Main content ── */
+    main {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 2.5rem 1rem 3rem;
+    }
+
+    .page-title {
+      font-size: 1.9rem;
+      font-weight: 800;
+      color: #111111;
+      margin-bottom: 0.4rem;
+    }
+
+    .page-title span { color: #FF6B00; }
+
+    .page-subtitle {
+      color: #666666;
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+    }
+
+    /* ── Upload form ── */
+    .upload-box {
+      display: flex;
+      gap: 0.6rem;
+      margin-bottom: 0.75rem;
+      align-items: stretch;
+    }
+
+    .file-label {
+      flex: 1;
+      padding: 0.85rem 1.1rem;
+      background: #ffffff;
+      border: 1.5px solid #dddddd;
+      border-radius: 8px;
+      color: #aaaaaa;
+      font-family: inherit;
+      font-size: 1rem;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      align-items: center;
+    }
+
+    .file-label.has-file {
+      color: #111111;
+      border-color: #FF6B00;
+      box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.12);
+    }
+
+    #file-input { display: none; }
+
+    .upload-box button {
+      padding: 0.85rem 1.7rem;
+      background: #FF6B00;
+      border: none;
+      border-radius: 8px;
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .upload-box button:hover { background: #e05e00; }
+    .upload-box button:active { transform: scale(0.98); }
+    .upload-box button:disabled {
+      background: #ffaa66;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .accepted {
+      font-size: 0.8rem;
+      color: #aaaaaa;
+      margin-bottom: 2rem;
+    }
+
+    /* ── Spinner ── */
+    .spinner {
+      display: none;
+      align-items: center;
+      gap: 0.65rem;
+      color: #888888;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .spinner.active { display: flex; }
+
+    .spinner-ring {
+      width: 18px;
+      height: 18px;
+      border: 2px solid #dddddd;
+      border-top-color: #FF6B00;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Error ── */
+    .error {
+      padding: 1rem 1.2rem;
+      background: #fff5f5;
+      border: 1.5px solid #e53e3e;
+      border-radius: 8px;
+      color: #c53030;
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 1.5rem 1rem;
+      color: #aaaaaa;
+      font-size: 0.8rem;
+      border-top: 1px solid #e5e5e5;
+      margin-top: 2rem;
+    }
+
+    footer span { color: #FF6B00; font-weight: 600; }
+
+    /* ── Mobile ── */
+    @media (max-width: 520px) {
+      .upload-box { flex-direction: column; }
+      .upload-box button { width: 100%; }
+      .page-title { font-size: 1.5rem; }
+    }
   </style>
 </head>
 <body>
+
   <header>
-    <h1>doc_analyzer</h1>
-    <p>AI-powered document analysis using Gemini</p>
-  </header>
-  <main>
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        {% for msg in messages %}
-          <div class="flash">{{ msg }}</div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
-
-    <div class="card">
-      <h2>Upload a Document</h2>
-      <p class="supported">Accepted formats: PDF, TXT, MD &mdash; max 10 MB</p>
-
-      <form method="POST" action="/analyze" enctype="multipart/form-data" id="upload-form">
-        <div class="drop-zone" id="drop-zone">
-          <input type="file" name="file" id="file-input" accept=".pdf,.txt,.md">
-          <label for="file-input">Choose a file</label>
-          <span> or drag and drop here</span>
-          <p class="file-chosen" id="file-name">No file selected</p>
-        </div>
-        <button type="submit" class="btn" id="submit-btn">Analyze Document</button>
-      </form>
+    <div class="brand">
+      <span class="brand-name">Torres<span class="brand-accent">Tech</span> Remote</span>
+      <div class="brand-divider"></div>
+      <span class="tool-name">Doc Analyzer</span>
     </div>
+  </header>
+
+  <main>
+    <h1 class="page-title">doc <span>analyzer</span></h1>
+    <p class="page-subtitle">Upload a PDF, TXT, or MD file — get a structured AI breakdown with a downloadable report.</p>
+
+    <form method="POST" action="/analyze" enctype="multipart/form-data" id="upload-form">
+      <div class="upload-box">
+        <label class="file-label" for="file-input" id="file-label">Choose a file...</label>
+        <input type="file" id="file-input" name="file" accept=".pdf,.txt,.md">
+        <button type="submit" id="analyze-btn">Analyze</button>
+      </div>
+    </form>
+    <p class="accepted">Accepted: .pdf, .txt, .md &mdash; max 10 MB</p>
+
+    <div class="spinner" id="spinner">
+      <div class="spinner-ring"></div>
+      <span>Analyzing document...</span>
+    </div>
+
+    {% if error %}
+      <div class="error">{{ error }}</div>
+    {% endif %}
   </main>
+
+  <footer>
+    &copy; 2026 <span>Torres Tech Remote</span> — All rights reserved.
+  </footer>
 
   <script>
     const input = document.getElementById('file-input');
-    const nameEl = document.getElementById('file-name');
-    const form = document.getElementById('upload-form');
-    const btn = document.getElementById('submit-btn');
-    const zone = document.getElementById('drop-zone');
+    const label = document.getElementById('file-label');
+    const form  = document.getElementById('upload-form');
+    const btn   = document.getElementById('analyze-btn');
+    const spinner = document.getElementById('spinner');
 
     input.addEventListener('change', () => {
-      nameEl.textContent = input.files[0] ? input.files[0].name : 'No file selected';
-    });
-
-    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
-    zone.addEventListener('dragleave', () => zone.classList.remove('over'));
-    zone.addEventListener('drop', e => {
-      e.preventDefault();
-      zone.classList.remove('over');
-      if (e.dataTransfer.files.length) {
-        input.files = e.dataTransfer.files;
-        nameEl.textContent = e.dataTransfer.files[0].name;
+      if (input.files[0]) {
+        label.textContent = input.files[0].name;
+        label.classList.add('has-file');
+      } else {
+        label.textContent = 'Choose a file...';
+        label.classList.remove('has-file');
       }
     });
 
     form.addEventListener('submit', () => {
       btn.disabled = true;
       btn.textContent = 'Analyzing...';
+      spinner.classList.add('active');
     });
   </script>
+
 </body>
 </html>
