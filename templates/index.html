@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>doc_analyzer</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f4f5f7; color: #333; min-height: 100vh; }
+    header { background: #1e1e2e; color: white; padding: 1.5rem 2rem; }
+    header h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: 0.03em; }
+    header p { font-size: 0.875rem; color: #999; margin-top: 0.3rem; }
+    main { max-width: 580px; margin: 3rem auto; padding: 0 1rem; }
+    .flash { background: #fff0f0; border: 1px solid #f5c6c6; border-radius: 6px; padding: 0.75rem 1rem; margin-bottom: 1.25rem; color: #c0392b; font-size: 0.9rem; }
+    .card { background: white; border-radius: 8px; padding: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.07); }
+    .card h2 { font-size: 1.05rem; margin-bottom: 0.5rem; color: #1e1e2e; }
+    .supported { font-size: 0.85rem; color: #888; margin-bottom: 1.75rem; }
+    .drop-zone { border: 2px dashed #ccc; border-radius: 6px; padding: 2.5rem 1.5rem; text-align: center; transition: border-color 0.2s, background 0.2s; }
+    .drop-zone.over { border-color: #4a90d9; background: #f0f7ff; }
+    .drop-zone input[type="file"] { display: none; }
+    .drop-zone label { cursor: pointer; color: #4a90d9; font-weight: 600; }
+    .drop-zone span { color: #666; }
+    .file-chosen { margin-top: 0.75rem; font-size: 0.875rem; color: #444; min-height: 1.2em; }
+    .btn { display: block; width: 100%; padding: 0.7rem; background: #1e1e2e; color: white; border: none; border-radius: 6px; font-size: 1rem; cursor: pointer; margin-top: 1.5rem; transition: background 0.2s; }
+    .btn:hover:not(:disabled) { background: #2d2d4e; }
+    .btn:disabled { background: #aaa; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>doc_analyzer</h1>
+    <p>AI-powered document analysis using Gemini</p>
+  </header>
+  <main>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for msg in messages %}
+          <div class="flash">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="card">
+      <h2>Upload a Document</h2>
+      <p class="supported">Accepted formats: PDF, TXT, MD &mdash; max 10 MB</p>
+
+      <form method="POST" action="/analyze" enctype="multipart/form-data" id="upload-form">
+        <div class="drop-zone" id="drop-zone">
+          <input type="file" name="file" id="file-input" accept=".pdf,.txt,.md">
+          <label for="file-input">Choose a file</label>
+          <span> or drag and drop here</span>
+          <p class="file-chosen" id="file-name">No file selected</p>
+        </div>
+        <button type="submit" class="btn" id="submit-btn">Analyze Document</button>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    const input = document.getElementById('file-input');
+    const nameEl = document.getElementById('file-name');
+    const form = document.getElementById('upload-form');
+    const btn = document.getElementById('submit-btn');
+    const zone = document.getElementById('drop-zone');
+
+    input.addEventListener('change', () => {
+      nameEl.textContent = input.files[0] ? input.files[0].name : 'No file selected';
+    });
+
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+    zone.addEventListener('drop', e => {
+      e.preventDefault();
+      zone.classList.remove('over');
+      if (e.dataTransfer.files.length) {
+        input.files = e.dataTransfer.files;
+        nameEl.textContent = e.dataTransfer.files[0].name;
+      }
+    });
+
+    form.addEventListener('submit', () => {
+      btn.disabled = true;
+      btn.textContent = 'Analyzing...';
+    });
+  </script>
+</body>
+</html>

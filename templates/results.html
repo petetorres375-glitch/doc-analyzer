@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Results &mdash; doc_analyzer</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f4f5f7; color: #333; }
+    header { background: #1e1e2e; color: white; padding: 1.5rem 2rem; }
+    header h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: 0.03em; }
+    header p { font-size: 0.875rem; color: #999; margin-top: 0.3rem; }
+    main { max-width: 720px; margin: 2rem auto; padding: 0 1rem; }
+    .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.75rem; }
+    .toolbar h2 { font-size: 1rem; color: #555; }
+    .toolbar strong { color: #1e1e2e; }
+    .actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .btn { padding: 0.5rem 1.2rem; border-radius: 5px; font-size: 0.875rem; text-decoration: none; cursor: pointer; border: none; font-family: inherit; white-space: nowrap; }
+    .btn-dark { background: #1e1e2e; color: white; }
+    .btn-outline { background: white; color: #333; border: 1px solid #ccc; }
+    .btn:hover { opacity: 0.85; }
+    .section { background: white; border-radius: 8px; margin-bottom: 1rem; box-shadow: 0 2px 6px rgba(0,0,0,0.06); overflow: hidden; }
+    .section-header { padding: 0.65rem 1.25rem; font-weight: 600; font-size: 0.9rem; }
+    .section-body { padding: 1rem 1.25rem; line-height: 1.65; font-size: 0.95rem; }
+    .section-body ul { padding-left: 1.25rem; }
+    .section-body li { margin-bottom: 0.35rem; }
+    .cyan .section-header  { background: #e0f7fa; color: #006064; }
+    .blue .section-header  { background: #e3f2fd; color: #0d47a1; }
+    .amber .section-header { background: #fff8e1; color: #bf360c; }
+    .red .section-header   { background: #fce4ec; color: #880e4f; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>doc_analyzer</h1>
+    <p>AI-powered document analysis using Gemini</p>
+  </header>
+  <main>
+    <div class="toolbar">
+      <h2>Results for <strong>{{ filename }}</strong></h2>
+      <div class="actions">
+        <a href="/download/{{ report_id }}" class="btn btn-dark">Download PDF Report</a>
+        <a href="/" class="btn btn-outline">Analyze Another</a>
+      </div>
+    </div>
+
+    <div class="section cyan">
+      <div class="section-header">Summary</div>
+      <div class="section-body">{{ result.summary }}</div>
+    </div>
+
+    <div class="section blue">
+      <div class="section-header">Key Data Points</div>
+      <div class="section-body">
+        <ul>
+          {% for item in result.key_data_points %}
+            <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <div class="section amber">
+      <div class="section-header">Action Items</div>
+      <div class="section-body">
+        <ul>
+          {% for item in result.action_items %}
+            <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <div class="section red">
+      <div class="section-header">Red Flags</div>
+      <div class="section-body">
+        <ul>
+          {% for item in result.red_flags %}
+            <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

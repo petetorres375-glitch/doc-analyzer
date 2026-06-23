@@ -1,4 +1,6 @@
+flask
 google-genai
+gunicorn
 pymupdf
 python-docx
 python-dotenv
