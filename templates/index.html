@@ -332,11 +332,33 @@
       }
     });
 
-    form.addEventListener('submit', () => {
+    form.addEventListener('submit', (e) => {
+      const file = input.files[0];
+      if (!file) {
+        e.preventDefault();
+        showClientError('Please choose a file before analyzing.');
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        e.preventDefault();
+        showClientError('File is too large. Maximum size is 10 MB.');
+        return;
+      }
       btn.disabled = true;
       btn.textContent = 'Analyzing...';
       spinner.classList.add('active');
     });
+
+    function showClientError(msg) {
+      let el = document.getElementById('client-error');
+      if (!el) {
+        el = document.createElement('div');
+        el.id = 'client-error';
+        el.className = 'error';
+        spinner.parentNode.insertBefore(el, spinner);
+      }
+      el.textContent = msg;
+    }
   </script>
 
 </body>
