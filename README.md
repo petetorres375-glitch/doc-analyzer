@@ -1,6 +1,6 @@
 # doc_analyzer
 
-A Python tool that analyzes PDF and text files using the Gemini API. Returns a structured breakdown with four labeled sections. Runs as a web app or from the command line — both modes generate a downloadable report.
+A Python tool that analyzes PDF and text files using the Claude API. Returns a structured breakdown with four labeled sections. Runs as a web app or from the command line — both modes generate a downloadable report.
 
 **No data retention** — uploaded files are deleted from the server immediately after analysis. Nothing is stored between requests. Emailed reports are built in memory and sent directly — never written to disk.
 
@@ -14,7 +14,7 @@ A Python tool that analyzes PDF and text files using the Gemini API. Returns a s
 ## Requirements
 
 - Python 3.12+
-- A free Gemini API key from [aistudio.google.com](https://aistudio.google.com)
+- An Anthropic API key from [console.anthropic.com](https://console.anthropic.com)
 
 ## Setup
 
@@ -25,7 +25,7 @@ cd doc-analyzer
 pip install -r requirements.txt
 
 cp .env.example .env
-# Edit .env and add your Gemini API key
+# Edit .env and add your Anthropic API key
 ```
 
 ## Usage
@@ -73,7 +73,7 @@ python doc_analyzer.py sample_docs/sample_invoice.txt
 
 ## Model
 
-Uses `gemini-2.5-flash` as the primary model. Automatically falls back to `gemini-2.5-flash-lite` on a 503 (model overload) before giving up.
+Uses `claude-sonnet-4-6` via the Anthropic API. The system prompt is cached on every request to reduce latency and cost.
 
 ## Live Demo
 
@@ -83,6 +83,6 @@ Uses `gemini-2.5-flash` as the primary model. Automatically falls back to `gemin
 
 1. Go to [railway.app](https://railway.app) → **New Project → Deploy from GitHub repo**
 2. Select this repository
-3. Add environment variables: `GEMINI_API_KEY` and `SECRET_KEY`
+3. Add environment variables: `ANTHROPIC_API_KEY` and `SECRET_KEY`
 4. To enable the Email Report button, also add `SMTP_USER` (your Gmail address) and `SMTP_PASS` (a Gmail App Password)
 4. Railway detects the `Procfile` and deploys automatically
