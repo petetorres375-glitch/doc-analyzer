@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
-"""doc_analyzer — Analyze PDF and text files using the Gemini API."""
+"""doc_analyzer — Analyze PDF and text files using the Claude API."""
 
 import argparse
 import json
-import os
 import sys
 from pathlib import Path
 
-from google import genai
-from google.genai import errors as genai_errors
+import anthropic
 from dotenv import load_dotenv
 from reportlab.lib.colors import HexColor, black, white
 from reportlab.lib.pagesizes import LETTER
@@ -72,43 +70,37 @@ def read_pdf(path: Path) -> str:
     return "\n".join(page.get_text() for page in doc)
 
 
+MODEL = "claude-sonnet-4-6"
+
+
 def analyze(file_path: Path) -> dict:
     text = read_file(file_path)
     if not text.strip():
         console.print("[red]Could not extract any text from the file.[/red]")
         sys.exit(1)
 
-    api_key = os.getenv("GEMINI_API_KEY")
-    if not api_key:
-        console.print("[red]GEMINI_API_KEY not set in .env[/red]")
-        sys.exit(1)
+    client = anthropic.Anthropic()
 
-    client = genai.Client(api_key=api_key)
+    with console.status(f"Analyzing with {MODEL}...", spinner="dots"):
+        response = client.messages.create(
+            model=MODEL,
+            max_tokens=2048,
+            system=[
+                {
+                    "type": "text",
+                    "text": SYSTEM_PROMPT,
+                    "cache_control": {"type": "ephemeral"},
+                }
+            ],
+            messages=[
+                {
+                    "role": "user",
+                    "content": f"Document: {file_path.name}\n\nContent:\n{text}",
+                }
+            ],
+        )
 
-    full_prompt = (
-        f"{SYSTEM_PROMPT}\n\n"
-        f"Document: {file_path.name}\n\n"
-        f"Content:\n{text}"
-    )
-
-    models = ["gemini-2.5-flash", "gemini-2.5-flash-lite"]
-    response = None
-    for model in models:
-        try:
-            with console.status(f"Analyzing with {model}...", spinner="dots"):
-                response = client.models.generate_content(
-                    model=model,
-                    contents=full_prompt,
-                )
-            break
-        except genai_errors.ServerError as e:
-            if "503" in str(e) and model != models[-1]:
-                console.print(f"[yellow]{model} unavailable, retrying with {models[models.index(model) + 1]}...[/yellow]")
-            else:
-                console.print(f"[red]API error: {e}[/red]")
-                sys.exit(1)
-
-    raw = response.text.strip()
+    raw = response.content[0].text.strip()
     if raw.startswith("```"):
         raw = raw.split("\n", 1)[1].rsplit("```", 1)[0].strip()
 

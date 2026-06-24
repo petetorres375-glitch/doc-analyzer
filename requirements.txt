@@ -1,5 +1,5 @@
 flask
-google-genai
+anthropic
 gunicorn
 pymupdf
 python-docx
