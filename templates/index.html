@@ -176,6 +176,62 @@
       margin-bottom: 1.5rem;
     }
 
+    /* ── How to use ── */
+    .how-to {
+      border-top: 1.5px solid #e5e5e5;
+      padding-top: 1.5rem;
+      margin-top: 0.25rem;
+    }
+
+    .how-to-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #aaaaaa;
+      margin-bottom: 1rem;
+    }
+
+    .how-to-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.9rem;
+    }
+
+    .step-num {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      background: #FF6B00;
+      color: #ffffff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+    }
+
+    .step-text strong {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #111111;
+      margin-bottom: 0.1rem;
+    }
+
+    .step-text span {
+      font-size: 0.85rem;
+      color: #666666;
+    }
+
     /* ── Footer ── */
     footer {
       text-align: center;
@@ -218,6 +274,33 @@
       </div>
     </form>
     <p class="accepted">Accepted: .pdf, .txt, .md &mdash; max 10 MB</p>
+
+    <section class="how-to">
+      <p class="how-to-title">How to use</p>
+      <div class="how-to-steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-text">
+            <strong>Choose a file</strong>
+            <span>Upload a PDF, TXT, or MD file (max 10 MB)</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-text">
+            <strong>Click Analyze</strong>
+            <span>Our AI reads and breaks down your document</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-text">
+            <strong>Download your report</strong>
+            <span>Get a structured summary you can save</span>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <div class="spinner" id="spinner">
       <div class="spinner-ring"></div>
